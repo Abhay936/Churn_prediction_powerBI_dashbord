@@ -19,27 +19,12 @@ if not mode:
 
     tenure = st.slider("Tenure (months)", 0, 72, 12)
 
-    phone = st.selectbox("Phone Service", ["Yes","No"])
-    multiple = st.selectbox("Multiple Lines", ["No","Yes"])
-
     internet = st.selectbox("Internet Service", ["DSL","Fiber","No"])
     security = st.selectbox("Online Security", ["No","Yes"])
-    backup = st.selectbox("Online Backup", ["No","Yes"])
-    device = st.selectbox("Device Protection", ["No","Yes"])
     tech = st.selectbox("Tech Support", ["No","Yes"])
-
-    tv = st.selectbox("Streaming TV", ["No","Yes"])
-    movies = st.selectbox("Streaming Movies", ["No","Yes"])
 
     contract = st.selectbox("Contract", ["Month-to-month","One year","Two year"])
     paper = st.selectbox("Paperless Billing", ["No","Yes"])
-
-    payment = st.selectbox("Payment Method", [
-        "Electronic check",
-        "Mailed check",
-        "Bank transfer",
-        "Credit card"
-    ])
 
     monthly_charges = st.number_input("Monthly Charges",0.0,200.0,70.0)
 
@@ -57,35 +42,21 @@ if not mode:
 
         "tenure": tenure,
 
-        "PhoneService": 1 if phone=="Yes" else 0,
-        "MultipleLines": 1 if multiple=="Yes" else 0,
-
+        # ⚠️ IMPORTANT: keep consistent mapping (same as training)
         "InternetService": {"DSL":0,"Fiber":1,"No":2}[internet],
 
         "OnlineSecurity": 1 if security=="Yes" else 0,
-        "OnlineBackup": 1 if backup=="Yes" else 0,
-        "DeviceProtection": 1 if device=="Yes" else 0,
         "TechSupport": 1 if tech=="Yes" else 0,
-
-        "StreamingTV": 1 if tv=="Yes" else 0,
-        "StreamingMovies": 1 if movies=="Yes" else 0,
 
         "Contract": {"Month-to-month":0,"One year":1,"Two year":2}[contract],
 
         "PaperlessBilling": 1 if paper=="Yes" else 0,
 
-        "PaymentMethod":{
-            "Electronic check":0,
-            "Mailed check":1,
-            "Bank transfer":2,
-            "Credit card":3
-        }[payment],
-
         "MonthlyCharges": monthly_charges,
         "TotalCharges": total_charges
         }
 
-        url = "https://churn-api-1-73me.onrender.com/predict"
+        url = "https://churn-api-30ag.onrender.com/predict"
 
         response = requests.post(url,json=data)
 
@@ -117,7 +88,7 @@ else:
         st.write("Uploaded Data")
         st.dataframe(df.head())
 
-        url = "https://churn-api-1-73me.onrender.com/predict"
+        url = "https://churn-api-30ag.onrender.com/predict"
 
         predictions=[]
         probabilities=[]
