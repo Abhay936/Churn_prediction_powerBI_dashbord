@@ -4,38 +4,29 @@ import numpy as np
 
 app = FastAPI()
 
-# Load model
+# Load model + scaler
 with open("Churn_model.pkl", "rb") as f:
     model = pickle.load(f)
 
-# ✅ Correct feature order (same as training)
-feature_order = [
-    "gender",
-    "SeniorCitizen",
-    "Partner",
-    "Dependents",
-    "tenure",
-    "InternetService",
-    "OnlineSecurity",
-    "TechSupport",
-    "Contract",
-    "PaperlessBilling",
-    "MonthlyCharges",
-    "TotalCharges"
-]
+with open("Scaler.pkl", "rb") as f:
+    scaler = pickle.load(f)
 
-@app.get("/")
-def home():
-    return {"message": "ML Model API is running"}
+feature_order = [
+    "gender","SeniorCitizen","Partner","Dependents",
+    "tenure","InternetService","OnlineSecurity","TechSupport",
+    "Contract","PaperlessBilling","MonthlyCharges","TotalCharges"
+]
 
 @app.post("/predict")
 def predict(data: dict):
 
-    # 🔥 IMPORTANT FIX
     features = np.array([data[f] for f in feature_order]).reshape(1, -1)
 
-    prediction = model.predict(features)[0]
-    probability = model.predict_proba(features)[0][1]
+    # 🔥 IMPORTANT FIX
+    features_scaled = scaler.transform(features)
+
+    prediction = model.predict(features_scaled)[0]
+    probability = model.predict_proba(features_scaled)[0][1]
 
     return {
         "prediction": int(prediction),
