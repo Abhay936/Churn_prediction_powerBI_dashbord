@@ -12,9 +12,18 @@ with open("Scaler.pkl", "rb") as f:
     scaler = pickle.load(f)
 
 feature_order = [
-    "gender","SeniorCitizen","Partner","Dependents",
-    "tenure","InternetService","OnlineSecurity","TechSupport",
-    "Contract","PaperlessBilling","MonthlyCharges","TotalCharges"
+    "tenure",
+    "Contract",
+    "InternetService",
+    "OnlineSecurity",
+    "TechSupport",
+    "MonthlyCharges",
+    "TotalCharges",
+    "PaperlessBilling",
+    "gender",
+    "SeniorCitizen",
+    "Partner",
+    "Dependents"
 ]
 
 @app.post("/predict")
