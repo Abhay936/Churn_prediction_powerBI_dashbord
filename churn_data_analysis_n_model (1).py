@@ -12,6 +12,19 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
+import sklearn
+import sys
+import matplotlib
+import platform
+
+print("NumPy:", np.__version__)
+print("Pandas:", pd.__version__)
+print("Matplotlib:", matplotlib.__version__)
+print("Seaborn:", sns.__version__)
+print("Sklearn version:", sklearn.__version__)
+print("Python path:", sys.executable)
+print("Python version:", platform.python_version())
+
 df = pd.read_csv('/content/telco_customer_data_v2.csv')
 
 df.head(5)
@@ -174,15 +187,17 @@ df.info()
 
 df['PhoneService'].unique()
 
-df['PhoneService'] = df['PhoneService'].map({'No':0,'Yes':1}).astype(int)
+df = df.drop(columns='Tenure_Group')
 
 df['PhoneService'].unique()
+
+df['PhoneService'] = df['PhoneService'].map({'No':0,'Yes':1,'Ye':1}).astype(int)
 
 for col in df:
   if df[col].dtype == 'object':
     print(f"{col} --> ",df[col].unique())
 
-df['MultipleLines'] = df['MultipleLines'].map({'Yes':1,'No':0,'No phone service':2}).astype(int)
+df['MultipleLines'] = df['MultipleLines'].map({'Yes':1,'No':0,'No phone service':2,'N':0}).astype(int)
 
 df['InternetService'] = df['InternetService'].map({'DSL':1,'No':0,'Fiber optic':2}).astype(int)
 
@@ -220,7 +235,7 @@ df['TotalCharges'] = df['TotalCharges'].fillna(df['TotalCharges'].median())
 
 df['MonthlyCharges'].dtype
 
-df=df.drop(columns='Tenure_Group')
+df
 
 corr = df.corr()
 plt.figure(figsize=(10,10))
@@ -233,8 +248,10 @@ df
 y = df['Churn']
 df = df.drop(columns='Churn')
 
+selected_feature = df[['tenure','Contract','InternetService','OnlineSecurity','TechSupport','MonthlyCharges','TotalCharges','PaperlessBilling','gender','SeniorCitizen','Partner','Dependents']]
+
 from sklearn.model_selection import train_test_split
-x_train,x_test,y_train,y_test = train_test_split(df,y,test_size=0.25,random_state=42)
+x_train,x_test,y_train,y_test = train_test_split(selected_feature,y,test_size=0.25,random_state=42)
 
 from sklearn.preprocessing import StandardScaler
 scalor = StandardScaler()
@@ -362,3 +379,57 @@ Precision is moderate, indicating some false positives, which is acceptable in c
 import pickle
 with open("Churn_model.pkl", "wb") as file:
     pickle.dump(model, file)
+
+df.info()
+
+for col in df:
+    print(f"{col} --> ",df[col].unique())
+
+import pickle
+import numpy as np
+
+# Load model (retrained on selected features)
+with open("Churn_model.pkl", "rb") as f:
+    model = pickle.load(f)
+
+# Selected feature order
+feature_order = [
+    "gender",
+    "SeniorCitizen",
+    "Partner",
+    "Dependents",
+    "tenure",
+    "InternetService",
+    "OnlineSecurity",
+    "TechSupport",
+    "Contract",
+    "PaperlessBilling",
+    "MonthlyCharges",
+    "TotalCharges"
+]
+
+# Sample input
+data={
+  "gender": 0,
+  "SeniorCitizen": 0,
+  "Partner": 1,
+  "Dependents": 1,
+  "tenure": 1,
+  "InternetService": 0,
+  "OnlineSecurity": 1,
+  "TechSupport": 1,
+  "Contract": 0,
+  "PaperlessBilling": 0,
+  "MonthlyCharges": 10,
+  "TotalCharges": 10
+}
+
+# Arrange features
+features = np.array([data[f] for f in feature_order]).reshape(1, -1)
+
+# Prediction
+prediction = model.predict(features)[0]
+probability = model.predict_proba(features)[0][1]
+
+print("Prediction:", prediction)
+print("Churn Probability:", probability)
