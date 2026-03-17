@@ -380,6 +380,9 @@ import pickle
 with open("Churn_model.pkl", "wb") as file:
     pickle.dump(model, file)
 
+with open("Scalor.pkl","wb") as file:
+  pickle.dump(scalor,file)
+
 df.info()
 
 for col in df:
