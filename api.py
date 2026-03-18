@@ -2,7 +2,7 @@ from fastapi import FastAPI
 import pickle
 import numpy as np
 
-app = FastAPI()
+api = FastAPI()
 
 # Load model + scaler
 with open("Churn_model.pkl", "rb") as f:
@@ -26,7 +26,7 @@ feature_order = [
     "Dependents"
 ]
 
-@app.post("/predict")
+@api.post("/predict")
 def predict(data: dict):
 
     features = np.array([data[f] for f in feature_order]).reshape(1, -1)
