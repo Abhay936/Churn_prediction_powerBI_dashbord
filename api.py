@@ -26,6 +26,10 @@ feature_order = [
     "Dependents"
 ]
 
+@api.get("/")
+def home():
+    return {"message": "API is running 🚀"}
+
 @api.post("/predict")
 def predict(data: dict):
 
