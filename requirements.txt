@@ -4,3 +4,4 @@ numpy==1.26.4
 scikit-learn==1.6.1
 pydantic
 joblib
+streamlit==1.45.1
