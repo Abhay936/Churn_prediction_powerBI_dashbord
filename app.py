@@ -223,7 +223,7 @@
 #             "churn_predictions.csv",
 #             "text/csv"
 #         )
-```python
+
 import os
 import streamlit as st
 import requests
@@ -590,4 +590,3 @@ else:
             "churn_predictions.csv",
             "text/csv"
         )
-```
