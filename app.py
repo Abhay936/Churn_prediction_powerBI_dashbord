@@ -14,7 +14,7 @@ st.title("📊 Customer Churn Prediction")
 # AUTO API URL
 API_URL = os.getenv(
     "API_URL",
-    "http://127.0.0.1:8000/predict"
+    "https://churn-api-30ag.onrender.com/predict"
 )
 
 # API helper function
