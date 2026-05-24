@@ -1,0 +1,24 @@
+services:
+  # FastAPI Backend
+  - type: web
+    name: churn-api
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn api:app --host 0.0.0.0 --port 10000
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.10
+
+  # Streamlit Frontend
+  - type: web
+    name: churn-dashboard
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: streamlit run app.py --server.port 10000 --server.address 0.0.0.0
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.10
+      - key: API_URL
+        value: https://churn-api.onrender.com/predict
